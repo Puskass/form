@@ -11,7 +11,7 @@ const Form = () => {
     inputBlurHandler: usernameBlurHandler,
     isValid: usernameIsValid,
     reset: resetUsernameInput,
-  } = useInput((value) => value.trim().length > 2 && value.trim().length <= 14);
+  } = useInput((value) => /^[A-Za-z0-9]{3,12}$/i.test(value.trim()));
 
   const {
     value: enteredEmail,
