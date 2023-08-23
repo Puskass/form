@@ -4,37 +4,20 @@ import useInput from "../hooks/use-input";
 import Button from "../common/Button";
 
 const Form = () => {
-  const {
-    value: enteredUsername,
-    hasError: usernameInputHasError,
-    valueChangeHandler: usernameChangeHandler,
-    inputBlurHandler: usernameBlurHandler,
-    isValid: usernameIsValid,
-    reset: resetUsernameInput,
-  } = useInput((value) => value.trim().length > 2 && value.trim().length <= 14);
+  const usernameInput = useInput("", (value) =>
+    /^[A-Za-z0-9]{3,12}$/i.test(value.trim())
+  );
 
-  const {
-    value: enteredEmail,
-    hasError: emailInputHasError,
-    valueChangeHandler: emailChangeHandler,
-    inputBlurHandler: emailBlurHandler,
-    isValid: emailIsValid,
-    reset: resetEmailInput,
-  } = useInput((value) =>
+  const emailInput = useInput("", (value) =>
     /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value.trim())
   );
 
-  const {
-    value: enteredPassword,
-    hasError: passwordInputHasError,
-    valueChangeHandler: passwordChangeHandler,
-    inputBlurHandler: passwordBlurHandler,
-    isValid: passwordIsValid,
-    reset: resetPasswordInput,
-  } = useInput((value) => /^(?=.*[A-Z])(?=.*\d).{6,15}$/.test(value));
+  const passwordInput = useInput("", (value) =>
+    /^(?=.*[A-Z])(?=.*\d).{6,15}$/.test(value)
+  );
 
-  let formIsValid = false;
-  if (usernameIsValid && emailIsValid && passwordIsValid) formIsValid = true;
+  let formIsValid =
+    usernameInput.isValid && emailInput.isValid && passwordInput.isValid;
 
   const submitFormHandler = (e) => {
     e.preventDefault();
@@ -43,13 +26,13 @@ const Form = () => {
       return;
     }
 
-    resetUsernameInput();
-    resetEmailInput();
-    resetPasswordInput();
+    usernameInput.reset();
+    emailInput.reset();
+    passwordInput.reset();
   };
 
   const inputClass =
-    usernameInputHasError && emailInputHasError && passwordInputHasError
+    usernameInput.hasError && emailInput.hasError && passwordInput.hasError
       ? "bg-red-200 border-red-700"
       : "";
 
@@ -60,13 +43,13 @@ const Form = () => {
           type="text"
           name="username"
           className={`${inputClass} hover:animate-bump shadow-md rounded-sm p-2 mb-3.5 outline-none`}
-          onChange={usernameChangeHandler}
-          value={enteredUsername}
-          onBlur={usernameBlurHandler}
+          onChange={usernameInput.valueChangeHandler}
+          value={usernameInput.value}
+          onBlur={usernameInput.inputBlurHandler}
           placeholder="Your Username"
           required
         />
-        {usernameInputHasError && (
+        {usernameInput.hasError && (
           <p className="text-red-300 px-2 mb-3">Username is invalid!</p>
         )}
 
@@ -74,14 +57,14 @@ const Form = () => {
           type="email"
           name="email"
           className={`${inputClass} hover:animate-bump shadow-md rounded-sm p-2 mb-3.5 outline-none`}
-          onChange={emailChangeHandler}
-          value={enteredEmail}
-          onBlur={emailBlurHandler}
+          onChange={emailInput.valueChangeHandler}
+          value={emailInput.value}
+          onBlur={emailInput.inputBlurHandler}
           placeholder="Email address"
           required
           autoComplete="off"
         />
-        {emailInputHasError && (
+        {emailInput.hasError && (
           <p className="text-red-300 px-2 mb-3">Email is invalid!</p>
         )}
 
@@ -89,14 +72,14 @@ const Form = () => {
           type="password"
           name="password"
           className={`${inputClass} hover:animate-bump shadow-md rounded-sm p-2 mb-3.5 outline-none`}
-          onChange={passwordChangeHandler}
-          value={enteredPassword}
-          onBlur={passwordBlurHandler}
+          onChange={passwordInput.valueChangeHandler}
+          value={passwordInput.value}
+          onBlur={passwordInput.inputBlurHandler}
           placeholder="Password"
           required
         />
-        {passwordInputHasError && (
-          <p className="text-red-300 px-2 mb-3">
+        {passwordInput.hasError && (
+          <div className="text-red-300 px-2 mb-3">
             Password is invalid!
             <ul className="list-item">
               <li>At least 6 characters</li>
@@ -104,7 +87,7 @@ const Form = () => {
               <li>At least one capitalized letter</li>
               <li>At least one number</li>
             </ul>
-          </p>
+          </div>
         )}
 
         <Button disabled={!formIsValid}>Submit</Button>
