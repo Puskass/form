@@ -1,72 +1,115 @@
 import React, { useState } from "react";
 import Card from "../common/Card";
+import useInput from "../hooks/use-input";
 
 const Form = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-  });
+  const {
+    value: enteredUsername,
+    hasError: usernameInputHasError,
+    valueChangeHandler: usernameChangeHandler,
+    inputBlurHandler: usernameBlurHandler,
+    isValid: usernameIsValid,
+    reset: resetUsernameInput,
+  } = useInput((value) => value.trim().length > 2 && value.trim().length <= 14);
+
+  const {
+    value: enteredEmail,
+    hasError: emailInputHasError,
+    valueChangeHandler: emailChangeHandler,
+    inputBlurHandler: emailBlurHandler,
+    isValid: emailIsValid,
+    reset: resetEmailInput,
+  } = useInput((value) =>
+    /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(value.trim())
+  );
+
+  const {
+    value: enteredPassword,
+    hasError: passwordInputHasError,
+    valueChangeHandler: passwordChangeHandler,
+    inputBlurHandler: passwordBlurHandler,
+    isValid: passwordIsValid,
+    reset: resetPasswordInput,
+  } = useInput((value) => /^(?=.*[A-Z])(?=.*\d).{6,15}$/.test(value));
+
+  let formIsValid = false;
+  if (usernameIsValid && emailIsValid && passwordIsValid) formIsValid = true;
 
   const submitFormHandler = (e) => {
     e.preventDefault();
 
-    
+    if (!formIsValid) {
+      return;
+    }
+
+    resetUsernameInput();
+    resetEmailInput();
+    resetPasswordInput();
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const inputClass =
+    usernameInputHasError && emailInputHasError && passwordInputHasError
+      ? "bg-red-200 border-red-700"
+      : "";
 
   return (
     <Card className={`max-w-sm m-auto mt-20`}>
       <form onSubmit={submitFormHandler} className="flex flex-col">
-        <div className="relative z-0 w-full mb-6 group">
-          <input
-            type="text"
-            name="name" 
-            id="floating_name" 
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            onChange={handleInputChange}
-            value={formData.name} 
-            placeholder=" "
-            required
-          />
-          <label
-            htmlFor="floating_name" 
-            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            First name
-          </label>
-        </div>
+        <input
+          type="text"
+          name="username"
+          className={`${inputClass} p-2`}
+          onChange={usernameChangeHandler}
+          value={enteredUsername}
+          onBlur={usernameBlurHandler}
+          placeholder="Your Username"
+          required
+        />
+        {usernameInputHasError && (
+          <p className="text-red-300">Username is invalid!</p>
+        )}
 
-        <div className="relative z-0 w-full mb-6 group">
-          <input
-            type="email"
-            name="email" 
-            id="floating_email" 
-            className="block py-2.5 px-0 w-full text-sm text-gray-900 bg-transparent border-0 border-b-2 border-gray-300 appearance-none dark:border-gray-600 dark:focus:border-blue-500 focus:outline-none focus:ring-0 focus:border-blue-600 peer"
-            onChange={handleInputChange}
-            value={formData.email} 
-            placeholder=" "
-            required
-            autoComplete="off"
-          />
-          <label
-            htmlFor="floating_email" 
-            className="peer-focus:font-medium absolute text-sm text-gray-500 dark:text-gray-400 duration-300 transform -translate-y-6 scale-75 top-3 -z-10 origin-[0] peer-focus:left-0 peer-focus:text-blue-600 peer-focus:dark:text-blue-500 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-6"
-          >
-            Email address
-          </label>
-        </div>
+        <input
+          type="email"
+          name="email"
+          className={`${inputClass} p-2`}
+          onChange={emailChangeHandler}
+          value={enteredEmail}
+          onBlur={emailBlurHandler}
+          placeholder="Email address"
+          required
+          autoComplete="off"
+        />
+        {emailInputHasError && (
+          <p className="text-red-300">Email is invalid!</p>
+        )}
+
+        <input
+          type="password"
+          name="password"
+          className={`${inputClass} p-2`}
+          onChange={passwordChangeHandler}
+          value={enteredPassword}
+          onBlur={passwordBlurHandler}
+          placeholder="Password"
+          required
+        />
+        {passwordInputHasError && (
+          <p className="text-red-300">
+            Password is invalid!
+            <ul className="list-item">
+              <li>At least 6 characters</li>
+              <li>At most 15 characters</li>
+              <li>At least one capitalized letter</li>
+              <li>At least one number</li>
+            </ul>
+          </p>
+        )}
 
         <button
           type="submit"
-          className="bg-blue-600 text-white font-semibold rounded-md mt-2 py-2"
+          disabled={!formIsValid}
+          className="disabled:bg-blue-400 bg-blue-600 text-white font-semibold rounded-md mt-2 py-2"
         >
           Submit
         </button>
