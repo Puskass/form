@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React from "react";
 import Card from "../common/Card";
 import useInput from "../hooks/use-input";
+import Button from "../common/Button";
 
 const Form = () => {
   const {
@@ -58,7 +59,7 @@ const Form = () => {
         <input
           type="text"
           name="username"
-          className={`${inputClass} p-2`}
+          className={`${inputClass} hover:animate-bump shadow-md rounded-sm p-2 mb-3.5 outline-none`}
           onChange={usernameChangeHandler}
           value={enteredUsername}
           onBlur={usernameBlurHandler}
@@ -66,13 +67,13 @@ const Form = () => {
           required
         />
         {usernameInputHasError && (
-          <p className="text-red-300">Username is invalid!</p>
+          <p className="text-red-300 px-2 mb-3">Username is invalid!</p>
         )}
 
         <input
           type="email"
           name="email"
-          className={`${inputClass} p-2`}
+          className={`${inputClass} hover:animate-bump shadow-md rounded-sm p-2 mb-3.5 outline-none`}
           onChange={emailChangeHandler}
           value={enteredEmail}
           onBlur={emailBlurHandler}
@@ -81,13 +82,13 @@ const Form = () => {
           autoComplete="off"
         />
         {emailInputHasError && (
-          <p className="text-red-300">Email is invalid!</p>
+          <p className="text-red-300 px-2 mb-3">Email is invalid!</p>
         )}
 
         <input
           type="password"
           name="password"
-          className={`${inputClass} p-2`}
+          className={`${inputClass} hover:animate-bump shadow-md rounded-sm p-2 mb-3.5 outline-none`}
           onChange={passwordChangeHandler}
           value={enteredPassword}
           onBlur={passwordBlurHandler}
@@ -95,7 +96,7 @@ const Form = () => {
           required
         />
         {passwordInputHasError && (
-          <p className="text-red-300">
+          <p className="text-red-300 px-2 mb-3">
             Password is invalid!
             <ul className="list-item">
               <li>At least 6 characters</li>
@@ -106,13 +107,7 @@ const Form = () => {
           </p>
         )}
 
-        <button
-          type="submit"
-          disabled={!formIsValid}
-          className="disabled:bg-blue-400 bg-blue-600 text-white font-semibold rounded-md mt-2 py-2"
-        >
-          Submit
-        </button>
+        <Button disabled={!formIsValid}>Submit</Button>
       </form>
     </Card>
   );
