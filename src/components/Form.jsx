@@ -13,7 +13,7 @@ const Form = () => {
   );
 
   const passwordInput = useInput("", (value) =>
-    /^(?=.*[A-Z])(?=.*\d).{6,15}$/.test(value)
+    /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/.test(value)
   );
 
   let formIsValid =
@@ -47,7 +47,6 @@ const Form = () => {
           value={usernameInput.value}
           onBlur={usernameInput.inputBlurHandler}
           placeholder="Your Username"
-          required
         />
         {usernameInput.hasError && (
           <p className="text-red-300 px-2 mb-3">Username is invalid!</p>
@@ -61,7 +60,6 @@ const Form = () => {
           value={emailInput.value}
           onBlur={emailInput.inputBlurHandler}
           placeholder="Email address"
-          required
           autoComplete="off"
         />
         {emailInput.hasError && (
@@ -76,16 +74,15 @@ const Form = () => {
           value={passwordInput.value}
           onBlur={passwordInput.inputBlurHandler}
           placeholder="Password"
-          required
         />
         {passwordInput.hasError && (
           <div className="text-red-300 px-2 mb-3">
             Password is invalid!
             <ul className="list-item">
-              <li>At least 6 characters</li>
-              <li>At most 15 characters</li>
+              <li>At least 8 characters</li>
               <li>At least one capitalized letter</li>
               <li>At least one number</li>
+              <li>At least one special character</li>
             </ul>
           </div>
         )}
